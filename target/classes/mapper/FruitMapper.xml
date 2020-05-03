@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zou.shopping.dao.FruitMapper">
+
+
+  <select id="selectByPrimaryKey" resultType="Fruit" parameterType="java.lang.Long">
+    select * from fruit where b_id=#{bid} limit 1
+  </select>
+
+  <select id="getAllFruit" resultType="Fruit">
+    select * from fruit
+  </select>
+
+  <select id="getAllFruitByPriceDESC" resultType="Fruit">
+    SELECT * from fruit order by price desc
+  </select>
+
+  <select id="getAllFruitByPriceASC" resultType="Fruit">
+    SELECT * from fruit order by price ASC
+  </select>
+
+  <select id="getAllFruitByType" resultType="Fruit" parameterType="java.lang.Integer">
+    select b.* from fruit b,fruit_category bc,category c
+    where b.b_id=bc.b_id and bc.c_id=c.c_id and c.c_id=#{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getAllFruitByName" resultType="Fruit" parameterType="java.lang.String">
+    select distinct * from fruit where fruit_name like "%"#{fruitName}"%"
+  </select>
+
+  <delete id="deleteFruit_Category" parameterType="java.lang.Long">
+    delete from fruit_category where b_id=#{fruitId}
+  </delete>
+
+  <delete id="deleteFruitByPrimary" parameterType="java.lang.Long">
+    delete from fruit where b_id=#{fruitId}
+  </delete>
+
+  <update id="updateFruit" parameterType="Fruit">
+    update fruit set author=#{author},fruit_name=#{fruitName},
+    price=#{price},brief=#{brief},source=#{source},stock=#{stock},sale=#{sale} where b_id=#{bId}
+  </update>
+
+  <insert id="saveFruit" parameterType="Fruit" useGeneratedKeys="true" keyProperty="bId">
+    insert into fruit (author,fruit_image,fruit_name,price,brief,source,stock)
+     values (#{author},#{fruitImage},#{fruitName},#{price},#{brief},#{source},#{stock})
+  </insert>
+
+  <insert id="saveFruitCategory" parameterType="hashmap">
+    insert into fruit_category (b_id,c_id)
+    values (#{bId},#{cId})
+  </insert>
+
+  <update id="reduceFruit" parameterType="hashmap">
+    update fruit set stock=stock-#{stock},sale=sale+#{stock} where b_id=#{bId}
+  </update>
+
+  <select id="checkFruitStock" parameterType="java.lang.Long" resultType="java.lang.Long">
+    select stock from fruit where b_id=#{bId}
+  </select>
+
+  <select id="selectFruitBySale" resultType="Fruit">
+    select * from fruit order by sale desc limit 5
+  </select>
+</mapper>
